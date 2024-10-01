@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
 import actionTypes from "../../contexts/Actoins";
 
 const Login = () => {
   useEffect(()=>{
     dispatch(actionTypes.isLoggedin(false));
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+
   },[])
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Initialize the hook

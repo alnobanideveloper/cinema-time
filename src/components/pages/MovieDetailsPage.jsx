@@ -31,6 +31,8 @@ const MovieDetails = ({ type }) => {
         !isLoggedin && navigate('/') //return to the login page if the user didnt loggin
         fetchDetails();
         fetchLocalStorage();
+        //eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, [])
 
 
