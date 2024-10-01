@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+.login-page {
+  background-color: #1f2937; /* Dark neutral background matching the navbar */
+  color: white;
+}
+
+.login-container {
+  max-width: 400px;
+  width: 100%;
+  background-color: #374151; /* Slightly lighter gray for contrast */
+}
+
+.login-title {
+  font-size: 3rem;
+  color: #fff;
+}
+
+.input {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 5px;
+}
+
+.login-input {
+  background-color: white;
+  color: #333;
+}
+
+.login-input:focus {
+  border-color: #5102ac;
+  box-shadow: 0 0 8px #5102ac;
+}
+
+.btn-primary {
+  background-color: #5102ac;
+  border-color: #5102ac;
+  color: #fff;
+  border-radius: 5px;
+}
+
+.btn-primary:hover {
+  background-color: #320d6e;
+  border-color: #320d6e ;
+  transform: scale(1.05);
+}
+
+@media (max-width: 600px) {
+  .login-container {
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+
+  .login-title {
+    font-size: 2.5rem;
+  }
+
+  .input, .btn-primary {
+    font-size: 1rem;
+  }
+}
+
+/* ----- card------- */
+.custom-card{
+  transition: 0.3s ease-in transform;
+}
+
+.custom-card:hover{
+  transform: scale(1.1);
+}
+
+.custom-card-image .card.image-full:before{
+  border-radius: 0.5rem;
+  opacity: 0.45;
+}
+/* for the animation of the cards */
+
+.fade-in-element {
+  opacity: 0;
+  transform: translateX(-100px); /* Initially off-screen */
+  transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.fade-in-element.visible {
+  opacity: 1;
+  transform: translateX(0); /* Moves to its original position */
+}
