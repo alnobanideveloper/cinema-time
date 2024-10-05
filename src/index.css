@@ -47,10 +47,7 @@ body {
   border-radius: 5px;
 }
 
-.login-input {
-  background-color: white;
-  color: #333;
-}
+
 
 .login-input:focus {
   border-color: #5102ac;

@@ -1,8 +1,12 @@
 import { FaStar } from "react-icons/fa";
-const Comment = ({comment , rating})=>{
-    return (
+import { useSelector } from "react-redux";
+const Comment = ()=>{
+    const rating = useSelector((state) => state.review.rating)
+    const comment = useSelector((state) => state.review.comment)
+
+        return (
         <div className="flex justify-between alert-info alert mb-3">
-        <div className>
+        <div>
            {comment}
         </div>
 

@@ -1,5 +1,6 @@
-import { useEffect } from "react"
+import { useEffect,useState } from "react"
 import { useLocation } from "react-router-dom"
+import { addComment , updateComment  , fetchUserComments} from "../../firebase";
 import { Link } from "react-router-dom";
 import Spinner from "../layouts/Spinner";
 import { useSelector, useDispatch } from 'react-redux'
@@ -23,49 +24,54 @@ const MovieDetails = ({ type }) => {
     const commentChange = useSelector((state) => state.review.commentChange)
     const isComment = useSelector((state) => state.review.isComment)
     const ratingChange = useSelector((state) => state.review.ratingChange)
-    const rating = useSelector((state) => state.review.rating)
-    const comment = useSelector((state) => state.review.comment)
     const id = useLocation().pathname.split('/')[2]
+    const [commentId , setCommentId] = useState(null);
 
     useEffect(() => {
         !isLoggedin && navigate('/') //return to the login page if the user didnt loggin
-        fetchDetails();
-        fetchLocalStorage();
+        fetchInfo();
         //eslint-disable-next-line react-hooks/exhaustive-deps
-
     }, [])
 
-
-    const fetchDetails = async () => {
-
+    const fetchInfo = async ()=>{
         dispatch(actionTypes.setLoading(true));
+
+        await fetchMovieComment();
+        await fetchDetails();
+
+        dispatch(actionTypes.setLoading(false));
+
+    }
+    
+    const fetchMovieComment = async ()=>{
+        const comments = await fetchUserComments();
+        const filteredComments = comments.filter(comment=>comment.movieId === id);
+
+        if(filteredComments.length > 0){
+            const {comment , rating , id} = filteredComments[0];
+            dispatch(actionTypes.userCommented(true))
+            dispatch(actionTypes.setSubmit(comment,rating));
+            setCommentId(id)
+        }
+        else
+            dispatch(actionTypes.userCommented(false))
+
+    }
+  
+    const fetchDetails = async () => {
         let data;
-        type === "Movies" ?
+        type === "movies" ?
             data = await fetch(`${API_URL}movie/${id}?api_key=${API_KEY}`) :
             data = await fetch(`${API_URL}tv/${id}?api_key=${API_KEY}`);
 
         const movie = await data.json();
 
         dispatch(actionTypes.setMovieDetails(movie));
-
-        dispatch(actionTypes.setLoading(false))
-
-    }
-    const fetchLocalStorage = () => {
-        const comment = localStorage.getItem(`comment_${type}_${id}`)
-        const rating = localStorage.getItem(`rating_${type}_${id}`)
-
-        if (comment && comment !== '') {
-            dispatch(actionTypes.userCommented(true))
-            dispatch(actionTypes.setSubmit(comment, rating));
-        }
-
-        else
-            dispatch(actionTypes.userCommented(false))
     }
 
 
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (commentChange === '') {
@@ -78,9 +84,10 @@ const MovieDetails = ({ type }) => {
             return;
         }
 
-        localStorage.setItem(`comment_${type}_${id}`, commentChange);
-        localStorage.setItem(`rating_${type}_${id}`, ratingChange);
-
+        isComment ? 
+        await updateComment(commentChange , ratingChange  , commentId ): 
+        setCommentId( await addComment(commentChange , ratingChange , type,id));
+        
         dispatch(actionTypes.userCommented(true))
         dispatch(actionTypes.setSubmit(commentChange, ratingChange));
         dispatch(actionTypes.setComment('')); //to remove the text from the input
@@ -116,7 +123,7 @@ const MovieDetails = ({ type }) => {
 
                                 <div className="card-body justify-end">
                                     <h2 className="card-title mb-0 text-white">
-                                        {type === "Movies" ? movie.title : movie.name}
+                                        {type === "movies" ? movie.title : movie.name}
                                     </h2>
                                 </div>
                             </div>
@@ -124,7 +131,7 @@ const MovieDetails = ({ type }) => {
                         <div className="col-span-2">
                             <div className="mb-6">
                                 <h1 className="text-4xl card-title mb-5 font-bold">
-                                    {type === "Movies" ? movie.title : movie.name}
+                                    {type === "movies" ? movie.title : movie.name}
                                 </h1>
 
                                 <div className="mb-4 flex flex-wrap gap-2">
@@ -147,7 +154,7 @@ const MovieDetails = ({ type }) => {
                             </div>
                             <div className="w-full rounded-lg shadow-md-base-100 stats">
                             </div>
-                            {isComment && <Comment comment={comment} rating={rating} />}
+                            {isComment && <Comment key={commentId}/>}
                             <form className="flex flex-col" onSubmit={handleSubmit}>
                                 <div className="flex flex-col justify-center gap-2">
 

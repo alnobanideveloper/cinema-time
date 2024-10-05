@@ -14,10 +14,11 @@ function App() {
           <>
             <Routes>
               <Route path='/' element={<Login />} />
+              <Route path='/signup' element={<Login />} />
               <Route path='/movies' element={<Home />} />
               <Route path='/series' element={<Home />} />
-              <Route path='/movie/*' element={<MovieDetails type={"Movies"} />} />
-              <Route path='/serie/*' element={<MovieDetails type={"Series"} />} />
+              <Route path='/movie/*' element={<MovieDetails type={"movies"} />} />
+              <Route path='/serie/*' element={<MovieDetails type={"series"} />} />
               <Route path='/stats' element={<Stats />} />
 
             </Routes>

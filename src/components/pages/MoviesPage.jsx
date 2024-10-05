@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import Spinner from "../layouts/Spinner"
 import {useSelector , useDispatch} from 'react-redux'
+import Spinner from "../layouts/Spinner"
 import Card from "../layouts/card";
 import actionTypes from '../../contexts/Actoins'
 

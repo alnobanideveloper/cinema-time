@@ -1,3 +1,4 @@
+
 const actionTypes = {
     setLoading: (loading) => ({
         type: 'SET_LOADING',
@@ -39,14 +40,21 @@ const actionTypes = {
     setAdmin : (isAdmin)=>({
         type:'SET_ADMIN',
         payload:isAdmin
-    }),
-
-    isLoggedin : (isLoggedin) =>({
-        type:'SET_LOGIN',
-        payload:isLoggedin
-    })
-
+    }), 
 }
 
-export default actionTypes;
+export const setAlert = (msg , alertType) => dispatch => {
+    dispatch({
+        type: 'SET_ALERT',
+        payload:  msg,
+        alertType
+    });
+
+    setTimeout(() => {
+        dispatch({ 
+            type: 'REMOVE_ALERT' 
+        });
+    }, 3000);
+
+};export default actionTypes;
 

@@ -1,14 +1,20 @@
 import { MdMovie } from "react-icons/md";
 import { Link } from 'react-router-dom'
-import { useLocation } from "react-router-dom";
+import { useLocation , useNavigate } from "react-router-dom";
+import { logout } from "../../firebase";
 const Navbar = ({ title = "CinemaTime" }) => {
     const type = useLocation().pathname;
+    const navigate = useNavigate();
     const email = localStorage.email
     
     let isAdmin = false;
     if(email === "admin@gmail.com")
        isAdmin = true;
 
+    const handleSignOut =  async ()=>{
+        await logout();
+        navigate('/');
+    }
     return (
         <nav className="navbar mb-12 shadow-la bg-neutral text-white">
             <div className="container mx-auto">
@@ -22,6 +28,7 @@ const Navbar = ({ title = "CinemaTime" }) => {
             {
                 isAdmin && <Link to='/stats' className={`btn btn-sm rounded-btn ${type === '/stats' ? 'btn-primary' : 'btn-ghost'}`}>Sats</Link>
             }
+            <div className="btn btn-sm btn-ghost rounded-btn" onClick={handleSignOut}>Sign Up</div>
         </nav>
     )
 }
