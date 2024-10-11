@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getAuth , createUserWithEmailAndPassword ,signInWithEmailAndPassword , signOut , onAuthStateChanged} from "firebase/auth";
-import { getFirestore,collection , addDoc , updateDoc,doc ,query,where, getDocs} from "firebase/firestore";
-
+import { getAuth , createUserWithEmailAndPassword ,signInWithEmailAndPassword  , signOut , onAuthStateChanged , sendEmailVerification } from "firebase/auth";
+import { getFirestore,collection , addDoc , updateDoc,doc ,query,where, getDocs } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyDYMZqW7CTOPomAMdR2iI24d8YqYxDjpHw",
   authDomain: "movie-app04.firebaseapp.com",
@@ -16,7 +15,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const commentsCol = collection(db , "comments");
-const auth = getAuth();
+export const auth = getAuth();
 
 export const createUser = async (email, password)=>{
     let isErr = true;
@@ -43,8 +42,13 @@ export const login = async (email, password) => {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-        console.log("Logged in user:", user);
-        isErr=false;
+        isErr = false;
+        
+        if(user.emailVerified === false){
+            isErr = true;
+            msg = "email is not vertified"
+        }
+
     } catch (error) {
         console.error("Error logging in:", error.message);
         isErr = true;
@@ -67,6 +71,11 @@ export const logout = async () => {
     }
   };
 
+export const vertifyEmail = async ()=>{
+    sendEmailVerification(auth.currentUser)
+        .then( ()=> alert("Email vertification sent"))
+}
+
 export const fetchUserComments = async () => {
     const uid = localStorage.getItem("userID");
     let comments = [];
@@ -88,6 +97,7 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         console.log("User is signed in:", user.uid);
         localStorage.setItem("userID" , user.uid);
+        console.log(user);
         // Call the async function to fetch the user's comments
     } else {
         console.log("No user is signed in.");

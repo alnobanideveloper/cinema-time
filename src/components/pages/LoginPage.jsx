@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login, createUser } from "../../firebase";
+import { login, createUser ,vertifyEmail } from "../../firebase";
 import { useLocation } from "react-router-dom";
 import Alert from "../layouts/Alert";
 import actionTypes, { setAlert } from "../../contexts/Actoins";
@@ -30,7 +30,6 @@ const Login = () => {
 
     localStorage.clear();
     localStorage.setItem("email", email);
-    localStorage.setItem("password", password);
 
     if (path === '/signup') { //signin page
 
@@ -39,8 +38,9 @@ const Login = () => {
 
       if (!isErr) {
         email === "admin@gmail.com" && dispatch(actionTypes.setAdmin(true));
-        localStorage.setItem('isLogIn' , true);
-        navigate('/movies');
+        localStorage.setItem('email' , email);
+        vertifyEmail();
+        navigate('/vertify');
       }
 
       else {
@@ -74,7 +74,16 @@ const Login = () => {
 
       else {
         console.log(msg, type);
-        dispatch(setAlert('Wrong Email Or Password', 1));
+        switch (msg) {
+          case "email is not vertified":
+            dispatch(setAlert('Please Vertify Your Email', 1));
+            break;
+          case "invalid-credential":
+            dispatch(setAlert('Wrong Email Or Password', 1));
+            break;
+          default:
+            break;
+        }
       }
     }
   }
@@ -114,13 +123,17 @@ const Login = () => {
               path === '/' ?
                 <>
                   Don't have an account? <Link to="/signup" className="text-primary hover:underline">Join now</Link>
-                </> :
+                </>
+                 :
 
                 <>
                   Already Have an account?<Link to="/" className="text-primary hover:underline">Sign In</Link>
                 </>
-            }
+            }  
           </p>
+          <p className="text-gray-400 text-center text-sm">
+            Your email isn't vertified?<Link to="/vertify" onClick={vertifyEmail} className="text-primary hover:underline"> Vertify now</Link>
+            </p>
         </form>
       </div>
     </>
